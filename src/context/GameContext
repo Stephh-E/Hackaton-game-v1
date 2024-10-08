@@ -1,0 +1,77 @@
+import React, { createContext, useContext, useState, useEffect } from 'react';
+
+// Create a context
+const GameContext = createContext();
+
+// Create a provider component
+export const GameProvider = ({ children }) => {
+  const [playerPosition, setPlayerPosition] = useState({ x: 0, y: 0 });
+  const [score, setScore] = useState(0);
+  const [candles, setCandles] = useState([]); // Array of candle positions
+  const [obstacles, setObstacles] = useState([]); // Array of obstacle positions
+  const [enemies, setEnemies] = useState([]); // Array of enemy positions
+  const [maze, setMaze] = useState([]); // 2D array for maze layout
+  const [gameOver, setGameOver] = useState(false);
+
+  useEffect(() => {
+    // Initialize your maze and other game elements here
+    initializeGame();
+  }, []);
+
+  const initializeGame = () => {
+    // Set up your maze, obstacles, candles, enemies, etc.
+    // Example:
+    const initialMaze = [
+      // Define your maze layout here
+    ];
+    setMaze(initialMaze);
+    // Initialize other game elements (candles, enemies, etc.)
+  };
+
+  const checkCollision = () => {
+    // Logic to check for collisions with obstacles, enemies, and candles
+    // Update game state accordingly
+  };
+
+  const collectCandle = (candlePosition) => {
+    // Logic to remove the candle from the array and increase score
+    setCandles(candles.filter(candle => candle !== candlePosition));
+    setScore(prevScore => prevScore + 1);
+  };
+
+  const moveEnemies = () => {
+    // Logic to move enemies
+    // For example, randomly move enemies or make them follow the ghost
+  };
+
+  return (
+    <GameContext.Provider
+      value={{
+        playerPosition,
+        setPlayerPosition,
+        score,
+        setScore,
+        candles,
+        setCandles,
+        obstacles,
+        setObstacles,
+        enemies,
+        setEnemies,
+        maze,
+        setMaze,
+        gameOver,
+        setGameOver,
+        checkCollision,
+        collectCandle,
+        moveEnemies,
+      }}
+    >
+      {children}
+    </GameContext.Provider>
+  );
+};
+
+// Custom hook for using the GameContext
+export const useGameContext = () => {
+  return useContext(GameContext);
+};
