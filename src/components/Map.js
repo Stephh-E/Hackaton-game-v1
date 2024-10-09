@@ -3,71 +3,72 @@ import Ghost from './Ghost';
 import Obstacles from './Obstacles';
 import Enemies from './Enemies';
 import Candles from './Candles';
-import { useGameContext } from '../context/GameContext'; // Optional: for state management context
+import { useGameContext } from '../context/GameContext';
 
 const Map = () => {
   const {
     playerPosition,
-    score,
     candles,
-    obstacles,
-    enemies,
-    maze,
-    gameOver,
-    setPlayerPosition,
-    checkCollision,
     collectCandle,
-    moveEnemies,
-  } = useGameContext(); // Using context for state management, if applicable
+    setPlayerPosition,
+  
+   
+  } = useGameContext(); 
+
+  const handlekeyPress = (event) => {
+    let newPosition = {...playerPosition};
+
+    switch (event.key) {
+      case 'ArrowUp':
+        newPosition.y -= 5; //Move up
+        break;
+        case 'ArrowDown':
+          newPosition.y +- 5; // Move down
+          break;
+        case 'ArrowLeft':
+          newPosition.x -= 5; // Move left
+        case 'ArrowRight':
+          newPosition.x +- 5; //Move right
+          break;
+        default:
+          return;
+    }
+  
+    setPlayerPosition(newPosition);
+    checkCandleCollection(newPosition);
+  };
+
+  const checkCandleCollection = (ghostPosition) => {
+    candles.forEach((candles)) => {
+      // Check for collision
+      if (
+        ghostPosition.x < candle.x + 16 && // assuming candle width is 16
+        ghostPosition.x + 16 > candle.x && // Check ghost's right side
+        ghost.Position.y < candle.y + 16 && // assuming candle height is 16
+        ghost.Position.y + 16 > candle.y // Check ghosts bottom side
+      ) {
+        collectCandle(candle);
+      }
+    });
+  };
 
   useEffect(() => {
-    // Handle enemy movement logic here, could be called every frame
-    const interval = setInterval(() => {
-      moveEnemies();
-    }, 1000); // Move enemies every second
-    return () => clearInterval(interval);
-  }, [moveEnemies]);
+    const handleKeyDown = (event) => {
+      handlekeyPress(events);
+    };
+  
+    window.addEventListener('keydown', handleKeyDown);
 
-  const handleKeyPress = (event) => {
-    // Logic to update player position based on key press (arrow keys)
-    // e.g., setPlayerPosition(newPosition);
-    checkCollision(); // Check for collisions after moving
-  };
-
-  // This function would render the maze layout based on your maze array
-  const renderMaze = () => {
-    return maze.map((row, rowIndex) =>
-      row.map((cell, cellIndex) => {
-        // Render cells based on their type (e.g., empty, obstacle)
-        // return <Cell key={`${rowIndex}-${cellIndex}`} type={cell} />;
-      })
-    );
-  };
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    };
+  }, [playerPosition]); // Ensure this re-runs when player position changes
 
   return (
-    <div
-      tabIndex="0"
-      onKeyDown={handleKeyPress}
-      style={{ outline: 'none' }} // Ensures no outline on focus
-    >
-      <div className="map-container">
-        {/* Render the maze */}
-        {renderMaze()}
-
-        {/* Render game components */}
-        <Ghost position={playerPosition} />
-        <Obstacles obstacles={obstacles} />
-        <Enemies enemies={enemies} />
-        <Candles candles={candles} />
-      </div>
-
-      {/* Display score */}
-      <Score score={score} />
-
-      {/* Show game over screen if applicable */}
-      {gameOver && <GameOver finalScore={score} />}
-    </div>
+  <div>
+      <Ghost position={playerPosition} />
+      <Candles candles={candles} />
+  </div>
   );
 };
 
-export default Map;
