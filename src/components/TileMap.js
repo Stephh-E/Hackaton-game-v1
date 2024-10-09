@@ -1,11 +1,12 @@
-import {useEffect,UseRef} from "react";
+import {useEffect, useRef } from "react";
 import { CELL_SIZE } from "../helpers/consts";
 
 export default function Sprite({ image, frameCoord, size=16 }) {
-    const canvasRef = useRef();
+    const canvasRef = useRef(null);
+    
     useEffect(() => {
         /** @type {HTMLCanvasElement} */
-        const canvasEl =  canvas.Ref.current;
+        const canvasEl =  canvasRef.current;
         const ctx = canvasEl.getContext("2d");
 
         //Clear out anything in the canvas tag
@@ -14,7 +15,7 @@ export default function Sprite({ image, frameCoord, size=16 }) {
         //Draw a graphic to the canvas tag
         // frameCoord: "1x0", "0x2"
         const tileMapX = Number(frameCoord.split("x")[0]);
-        const tileMapY = Number(frameCoord.split("y")[1]);
+        const tileMapY = Number(frameCoord.split("x")[1]);
 
         ctx.drawImage(
             image,
